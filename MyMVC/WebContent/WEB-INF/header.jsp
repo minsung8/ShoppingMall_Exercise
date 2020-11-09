@@ -59,9 +59,9 @@
 			<div class="col-md-4">
 				<a href="<%= ctxPath %>/member/memberRegister.up">회원가입</a>
 			</div>
-			<c:if test="${ sessionScope.loginuser != null }">
+			<c:if test="${ sessionScope.loginuser.name == '관리자' }">
 				<div class="col-md-4">
-				<a href="<%= ctxPath %>/member/memberList.jsp">회원목록</a>
+				<a href="<%= ctxPath %>/member/memberList.up">회원목록</a>
 				</div>
 			</c:if>
 		</div>

@@ -275,7 +275,7 @@
          <tr>
             <td style="width: 20%; font-weight: bold;">성명&nbsp;<span class="star">*</span></td>
             <td style="width: 80%; text-align: left;">
-                
+                <input type="hidden" name="userid" value="${sessionScope.loginuser.userid}" readonly/>
                 <input type="text" name="name" id="name" value="${sessionScope.loginuser.name}" class="requiredInfo" required /> 
                <span class="error">성명은 필수입력 사항입니다.</span>
             </td>
@@ -322,7 +322,7 @@
             <td style="width: 20%; font-weight: bold;">주소</td>
             <td style="width: 80%; text-align: left;">
                <input type="text" id="address" name="address" value="${sessionScope.loginuser.address}" size="40" /><br/>
-                <input type="text" id="detailaddress" name="detailaddress" value="${sessionScope.loginuser.detailaddress}" size="40" />&nbsp;<input type="text" id="extraaddress" name="extraaddress" value="${sessionScope.loginuser.extraaddress}" size="40" /> 
+                <input type="text" id="detailAddress" name="detailAddress" value="${sessionScope.loginuser.detailaddress}" size="40" />&nbsp;<input type="text" id="extraAddress" name="extraAddress" value="${sessionScope.loginuser.extraaddress}" size="40" /> 
                 <span class="error">주소를 입력하세요</span>
             </td>
          </tr>

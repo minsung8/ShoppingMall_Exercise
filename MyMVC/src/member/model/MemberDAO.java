@@ -3,6 +3,8 @@ package member.model;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -354,6 +356,83 @@ public class MemberDAO implements InterMemberDAO {
 			close();
 		}	
 		return n;
+	}
+
+	@Override
+	public int updateMember(MemberVO member) throws SQLException {
+		
+		int n = 0;
+		try {
+			conn = ds.getConnection();
+			
+			String sql = "update tbl_member set name = ? "
+					+ "							, pwd = ? "
+					+ "							, email = ? "
+					+ "							, mobile = ? "
+					+ "							, postcode = ? "
+					+ "							, address = ? "
+					+ "							, detailaddress = ? "
+					+ "							, extraaddress = ? "     
+					   + "where userid = ? "; 
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, member.getName());
+			pstmt.setString(2, Sha256.encrypt(member.getPwd()));
+			pstmt.setString(3, aes.encrypt(member.getEmail()) );
+			pstmt.setString(4, aes.encrypt(member.getMobile()));
+			pstmt.setString(5, member.getPostcode());
+			pstmt.setString(6, member.getAddress());
+			pstmt.setString(7, member.getDetailaddress());
+			pstmt.setString(8, member.getExtraaddress());
+			pstmt.setString(9, member.getUserid());
+			
+			
+			n = pstmt.executeUpdate();
+			
+		}catch (GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}	
+		return n;
+	}
+
+	@Override
+	public List<MemberVO> selectAllMember() throws SQLException {
+		
+		List<MemberVO> memberList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " select userid, name, email, gender "
+					   + " from tbl_member "
+					   + " where where userid != 'admin' "
+					   + " order by registerday desc ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				MemberVO mvo = new MemberVO();
+				mvo.setUserid(rs.getNString(1));
+				mvo.setUserid(rs.getNString(2));
+				mvo.setUserid( aes.decrypt(rs.getNString(3)) );
+				mvo.setUserid(rs.getNString(4));
+				memberList.add(mvo);
+				
+			}
+			
+		} catch (GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}		
+		
+		return memberList;
 	}	
 	
 	

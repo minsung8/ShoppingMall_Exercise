@@ -44,6 +44,19 @@ public class MemberVO {
 		this.gender = gender;
 		this.birthday = birthday;
 	}
+	
+	public MemberVO(String userid, String pwd, String name, String email, String mobile, String postcode,
+			String address, String detailaddress, String extraaddress) {
+		this.userid = userid;
+		this.pwd = pwd;
+		this.name = name;
+		this.email = email;
+		this.mobile = mobile;
+		this.postcode = postcode;
+		this.address = address;
+		this.detailaddress = detailaddress;
+		this.extraaddress = extraaddress;
+	}
 
 	public String getUserid() {
 		return userid;

@@ -67,9 +67,6 @@ where email = 'abc@abc.com';
 delete from tbl_member;
 commit;
 
-
-
-
 create table tbl_loginhistory
 ( fk_userid varchar2(20) not null
 , logindate date default sysdate not null
@@ -138,3 +135,63 @@ String sql = "select userid, name, email, mobile, postcode, address, detailaddre
 "(select trunc(months_between(sysdate, max(logindate))) as lastlogingap\n"+
 "from tbl_loginhistory\n"+
 "where fk_userid = 'yougs') H";
+
+select * from
+tbl_member;
+
+--- 오라클에서 프로시저를 사용하여 회원을 대량으로 입력(insert)하겠습니다. ---
+select * 
+from user_constraints
+where table_name = 'TBL_MEMBER';
+
+alter table tbl_member
+drop constraint UQ_TBL_MEMBER_EMAIL;  -- 이메일을 대량으로 넣기 위해서 어쩔수 없이 email 에 대한 unique 제약을 없애도록 한다. 
+
+select * 
+from user_constraints
+where table_name = 'TBL_MEMBER';
+
+select *
+from user_indexes
+where table_name = 'TBL_MEMBER';
+
+drop index UQ_TBL_MEMBER_EMAIL;
+
+select *
+from user_indexes
+where table_name = 'TBL_MEMBER';
+
+delete from tbl_member 
+where name like '홍승의%' or name like '아이유%';
+
+commit;
+
+select * from tbl_member;
+
+create or replace procedure pcd_member_insert 
+(p_userid  IN  varchar2
+,p_name    IN  varchar2
+,p_gender  IN  char)
+is
+begin
+     for i in 1..100 loop
+         insert into tbl_member(userid, pwd, name, email, mobile, postcode, address, detailaddress, extraaddress, gender, birthday) 
+         values(p_userid||i, '9695b88a59a1610320897fa84cb7e144cc51f2984520efb77111d94b402a8382', p_name||i, 'oWufVBEfzY5HkYGPcH5CMfjKjxtCUTP5bDlgKIAJOug=' , 'c5TbkMv3Bk7viPixbC8fwA==', '15864', '경기 군포시 오금로 15-17', '102동 9004호', ' (금정동)', p_gender, '1991-01-27');
+     end loop;
+end pcd_member_insert;
+-- Procedure PCD_MEMBER_INSERT이(가) 컴파일되었습니다.
+
+
+exec pcd_member_insert('hongse','홍승의','1');
+-- PL/SQL 프로시저가 성공적으로 완료되었습니다.
+commit;
+
+exec pcd_member_insert('iyou','아이유','2');
+-- PL/SQL 프로시저가 성공적으로 완료되었습니다.
+commit;
+
+
+select * 
+from tbl_member;
+
+

@@ -1,6 +1,7 @@
 package member.model;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public interface InterMemberDAO {
@@ -28,6 +29,12 @@ public interface InterMemberDAO {
 	
 	// 회원의 코인 업데이트
 	int coinUpdate(Map<String, String> paraMap) throws SQLException;
+	
+	// 회원정보수정
+	int updateMember(MemberVO member) throws SQLException;
+	
+	// 전체회원목록
+	List<MemberVO> selectAllMember() throws SQLException;
 	
 }
 
