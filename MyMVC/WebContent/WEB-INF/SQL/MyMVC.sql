@@ -1,5 +1,13 @@
 show user;
 
+SELECT * FROM tabs;
+select * from KOY_tbl_cart_test;
+
+delete from KOY_tbl_cart_test
+where FK_USERID = '1' and FK_PNUM = 1;
+
+rollback;
+
 create user mymvc_user identified by cclass;
 
 grant connect, resource, create view, unlimited tablespace to mymvc_user;
@@ -195,3 +203,7 @@ select *
 from tbl_member;
 
 
+select userid, name, email, gender 
+from tbl_member 
+where userid != 'admin'
+order by registerday desc;

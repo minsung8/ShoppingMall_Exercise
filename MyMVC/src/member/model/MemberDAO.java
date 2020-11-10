@@ -399,7 +399,7 @@ public class MemberDAO implements InterMemberDAO {
 	}
 
 	@Override
-	public List<MemberVO> selectAllMember() throws SQLException {
+	public List<MemberVO> selectMember(Map<String, String> paraMap) throws SQLException {
 		
 		List<MemberVO> memberList = new ArrayList<>();
 		
@@ -408,10 +408,35 @@ public class MemberDAO implements InterMemberDAO {
 			
 			String sql = " select userid, name, email, gender "
 					   + " from tbl_member "
-					   + " where where userid != 'admin' "
-					   + " order by registerday desc ";
+					   + " where userid != 'admin' "
+					   + "  ";
+			
+			String colname = paraMap.get("searchType");
+			String searchWord = paraMap.get("searchWord");
+			
+			if ("email".equals(colname)) {	// 검색대상이 이메일인 경우 암호화 
+				
+				searchWord = aes.encrypt(searchWord);
+				
+			} 
+			
+			if (searchWord != null && !searchWord.trim().isEmpty()) {
+								
+				sql += " and " + colname + " like '%'|| ? || '%' ";
+				
+			}
+			
+			sql += " order by registerday desc ";
 			
 			pstmt = conn.prepareStatement(sql);
+			
+			if (searchWord != null && !searchWord.trim().isEmpty()) {
+				
+				pstmt.setString(1, searchWord);
+				
+			}
+			
+			
 			
 			rs = pstmt.executeQuery();
 			
@@ -419,9 +444,86 @@ public class MemberDAO implements InterMemberDAO {
 				
 				MemberVO mvo = new MemberVO();
 				mvo.setUserid(rs.getNString(1));
-				mvo.setUserid(rs.getNString(2));
-				mvo.setUserid( aes.decrypt(rs.getNString(3)) );
-				mvo.setUserid(rs.getNString(4));
+				mvo.setName(rs.getNString(2));
+				mvo.setEmail( aes.decrypt(rs.getNString(3)) );
+				mvo.setGender(rs.getNString(4));
+				memberList.add(mvo);
+				
+			}
+			
+		} catch (GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}		
+		
+		return memberList;
+	}
+
+	@Override
+	public List<MemberVO> selectPagingMember(Map<String, String> paraMap) throws SQLException {
+
+		List<MemberVO> memberList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = "select userid, name, email, gender\n"+
+					" from \n"+
+					" (\n"+
+					"    select rownum as rno, userid, name, email, gender\n"+
+					"    from \n"+
+					"    (\n"+
+					"        select userid, name, email, gender "+
+					"        from tbl_member "+
+					"        where userid != 'admin' ";
+					
+			
+			String colname = paraMap.get("searchType");
+			String searchWord = paraMap.get("searchWord");
+			
+			if ("email".equals(colname)) {	// 검색대상이 이메일인 경우 암호화 
+				
+				searchWord = aes.encrypt(searchWord);
+				
+			} 
+			
+			if (searchWord != null && !searchWord.trim().isEmpty()) {
+								
+				sql += " and "+colname+" like '%'|| ? ||'%' ";
+				
+			}
+			
+			sql += " order by registerday desc "+
+					"    ) V "+
+					" ) T "+
+					" where T.rno between ? and ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			int currentShowPageNo = Integer.parseInt(paraMap.get("currentShowPageNo"));
+			int sizePerPage = Integer.parseInt(paraMap.get("sizePerPage"));
+			
+			if (searchWord != null && !searchWord.trim().isEmpty()) {
+				
+				pstmt.setString(1, searchWord);
+				pstmt.setInt(2, currentShowPageNo * sizePerPage - (sizePerPage - 1));
+				pstmt.setInt(3, currentShowPageNo * sizePerPage);
+				
+			} else {
+				pstmt.setInt(1, currentShowPageNo * sizePerPage - (sizePerPage - 1));
+				pstmt.setInt(2, currentShowPageNo * sizePerPage);
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				MemberVO mvo = new MemberVO();
+				mvo.setUserid(rs.getNString(1));
+				mvo.setName(rs.getNString(2));
+				mvo.setEmail( aes.decrypt(rs.getNString(3)) );
+				mvo.setGender(rs.getNString(4));
 				memberList.add(mvo);
 				
 			}
@@ -434,6 +536,5 @@ public class MemberDAO implements InterMemberDAO {
 		
 		return memberList;
 	}	
-	
 	
 }

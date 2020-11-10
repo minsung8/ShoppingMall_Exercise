@@ -33,8 +33,12 @@ public interface InterMemberDAO {
 	// 회원정보수정
 	int updateMember(MemberVO member) throws SQLException;
 	
-	// 전체회원목록
-	List<MemberVO> selectAllMember() throws SQLException;
+	// 회원목록검색
+	List<MemberVO> selectMember(Map<String, String> paraMap) throws SQLException;
+	
+	// 페이징 처리
+	List<MemberVO> selectPagingMember(Map<String, String> paraMap) throws SQLException;
+	
 	
 }
 
