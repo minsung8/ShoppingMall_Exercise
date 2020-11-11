@@ -111,9 +111,11 @@
 			</c:forEach>
  	    </tbody> 
  	      </table>
- 	       <div>
-
- 	      </div>
+ 	      
+       <div>
+			${pageBar} 
+       </div>
+       
 </body>
 
 <jsp:include page="../footer.jsp"/>

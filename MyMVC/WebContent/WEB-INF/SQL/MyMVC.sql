@@ -207,3 +207,70 @@ select userid, name, email, gender
 from tbl_member 
 where userid != 'admin'
 order by registerday desc;
+
+-- == 페이징 처리를 위한 SQL문 작성하기 == --
+select rownum, userid, name, email, gender
+from tbl_member
+where userid != 'admin'
+and rownum between 1 and 3
+
+-- 1 page
+select rno, userid, name, email, gender
+from 
+(
+    select rownum as rno, userid, name, email, gender
+    from 
+    (
+        select userid, name, email, gender
+        from tbl_member
+        where userid != 'admin'
+        and name like '%'||'승의'||'%'
+        order by registerday desc
+    ) V 
+) T
+where T.rno between 1 and 3;
+
+-- 2 page
+select rno, userid, name, email, gender
+from 
+(
+    select rownum as rno, userid, name, email, gender
+    from 
+    (
+        select userid, name, email, gender
+        from tbl_member
+        where userid != 'admin'
+        order by registerday desc
+    ) V 
+) T
+where T.rno between 4 and 6;
+/*
+    currentShowPageNo = 2
+    sizePerPage = 3
+    
+    currentShowPageNo * sizePerPage - (sizePerPage - 1) ==> 4
+    currentShowPageNo * sizePerPage ==> 6
+*/
+
+
+
+
+
+
+
+
+
+String sql = "select rno, userid, name, email, gender\n"+
+"from \n"+
+"(\n"+
+"    select rownum as rno, userid, name, email, gender\n"+
+"    from \n"+
+"    (\n"+
+"        select userid, name, email, gender\n"+
+"        from tbl_member\n"+
+"        where userid != 'admin'\n"+
+"        and name like '%'||'승의'||'%'\n"+
+"        order by registerday desc\n"+
+"    ) V \n"+
+") T\n"+
+"where T.rno between 1 and 3";

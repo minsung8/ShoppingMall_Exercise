@@ -436,8 +436,6 @@ public class MemberDAO implements InterMemberDAO {
 				
 			}
 			
-			
-			
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -535,6 +533,60 @@ public class MemberDAO implements InterMemberDAO {
 		}		
 		
 		return memberList;
+	}
+
+	@Override
+	public int getTotalPage(Map<String, String> paraMap) throws SQLException {
+		
+		int totalPage = 0;
+		
+		try {
+			conn = ds.getConnection();
+			
+			String sql = " select ceil( count(*) / ? ) " +
+						" from tbl_member " + 
+						" where userid != 'admin' ";
+					
+			
+			String colname = paraMap.get("searchType");
+			String searchWord = paraMap.get("searchWord");
+			
+			if ("email".equals(colname)) {	// 검색대상이 이메일인 경우 암호화 
+				
+				searchWord = aes.encrypt(searchWord);
+				
+			} 
+			
+			if (searchWord != null && !searchWord.trim().isEmpty()) {
+								
+				sql += " and "+colname+" like '%'|| ? ||'%' ";
+				
+			}									
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, paraMap.get("sizePerPage"));
+			
+			if (searchWord != null && !searchWord.trim().isEmpty()) {
+				
+				pstmt.setString(2, searchWord);
+	
+			}
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			totalPage = rs.getInt(1);
+			
+		} catch (GeneralSecurityException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}		
+		
+		return totalPage;
+		
 	}	
 	
 }

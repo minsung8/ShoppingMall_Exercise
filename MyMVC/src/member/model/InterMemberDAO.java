@@ -39,6 +39,8 @@ public interface InterMemberDAO {
 	// 페이징 처리
 	List<MemberVO> selectPagingMember(Map<String, String> paraMap) throws SQLException;
 	
+	// 전체회원에 대한 총페이지 개수 알아오기
+	int getTotalPage(Map<String, String> paraMap) throws SQLException;
 	
 }
 
