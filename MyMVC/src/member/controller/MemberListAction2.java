@@ -12,8 +12,9 @@ import common.controller.AbstractController;
 import member.model.InterMemberDAO;
 import member.model.MemberDAO;
 import member.model.MemberVO;
+import my.util.MyUtil;
 
-public class MemberListAction extends AbstractController{
+public class MemberListAction2 extends AbstractController{
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -22,7 +23,7 @@ public class MemberListAction extends AbstractController{
 		HttpSession session = request.getSession();
 		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
 			
-		if (loginuser != null && loginuser.getUserid().equals("admin")) {
+		if (loginuser != null && "admin".equals(loginuser.getUserid())) {
 			
 			InterMemberDAO mdao = new MemberDAO();
 			
@@ -114,6 +115,7 @@ public class MemberListAction extends AbstractController{
 			
 			// [이전] 만들기
 			if ( pageNo != 1) {
+				pageBar += "&nbsp;<a href='memberList.up?currentShowPageNo=1&sizePerPage="+sizePerPage+"&searchType="+searchType+"&searchWord="+searchWord+"'>[맨처음]</a>&nbsp";
 				pageBar += "&nbsp;<a href='memberList.up?currentShowPageNo="+(pageNo - 1)+"&sizePerPage="+sizePerPage+"&searchType="+searchType+"&searchWord="+searchWord+"'>[이전]</a>&nbsp";
 			}
 			
@@ -130,10 +132,21 @@ public class MemberListAction extends AbstractController{
 			
 			// [다음] 만들기, pageNo update
 			if (!(pageNo > totalPage)) {
+				
 				pageBar += "&nbsp;<a href='memberList.up?currentShowPageNo="+pageNo+"&sizePerPage="+sizePerPage+"&searchType="+searchType+"&searchWord="+searchWord+"'>[다음]</a>&nbsp";
+				pageBar += "&nbsp;<a href='memberList.up?currentShowPageNo="+totalPage+"&sizePerPage="+sizePerPage+"&searchType="+searchType+"&searchWord="+searchWord+"'>[마지막]</a>&nbsp";
 			}
 			
 			request.setAttribute("pageBar", pageBar);
+			
+			// 현재 페이지를 돌아갈 페이지 주소(goBackURL)로 지정하기
+			String currentURL = MyUtil.getCurrentURL(request);
+			// 회원 조회 시 현재 그 페이지로 그대로 되돌아가기 위한 용도로 사용
+			
+			currentURL = currentURL.replaceAll("&", " ");
+			System.out.println(currentURL);
+	
+			request.setAttribute("goBackURL", currentURL);
 			
 			super.setRedirect(false);
 			super.setViewPage("/WEB-INF/member/memberList.jsp");

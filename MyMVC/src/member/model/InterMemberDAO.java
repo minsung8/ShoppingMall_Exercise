@@ -42,6 +42,9 @@ public interface InterMemberDAO {
 	// 전체회원에 대한 총페이지 개수 알아오기
 	int getTotalPage(Map<String, String> paraMap) throws SQLException;
 	
+	// userid값으로 회원 한명의 상세정보 알아오기
+	MemberVO MemberOneDetail(String userid);
+	
 }
 
 

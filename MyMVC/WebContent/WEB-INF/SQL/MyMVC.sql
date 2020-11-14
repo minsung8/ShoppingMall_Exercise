@@ -1,12 +1,17 @@
 show user;
 
 SELECT * FROM tabs;
-select * from KOY_tbl_cart_test;
+select * from tbl_member
+where name = '김민성';
+
+delete from tbl_member
+where name = '김민성';
 
 delete from KOY_tbl_cart_test
 where FK_USERID = '1' and FK_PNUM = 1;
 
 rollback;
+commit;
 
 create user mymvc_user identified by cclass;
 
@@ -75,12 +80,13 @@ where email = 'abc@abc.com';
 delete from tbl_member;
 commit;
 
-create table tbl_loginhistory
-( fk_userid varchar2(20) not null
+create table kms_tbl_loginhistory
+( fk_userno number(8)
 , logindate date default sysdate not null
 , clientip varchar2(20) not null
-, constraint FK_tbl_loginhistory foreign key(fk_userid) REFERENCES tbl_member(userid)
+, constraint FK_kms_tbl_loginhistory foreign key(fk_userno) REFERENCES tbl_member(userno)
 );
+
 
 select userid, name, email, mobile, postcode, address, detailaddress, extraaddress, gender,
 substr(birthday,1,4) as birthdayyyyy, substr(birthday,6,2) as birthdaymm, substr(birthday,9,2) as birthdaydd
@@ -274,3 +280,111 @@ String sql = "select rno, userid, name, email, gender\n"+
 "    ) V \n"+
 ") T\n"+
 "where T.rno between 1 and 3";
+
+
+
+-- 검색이 (있는 or 없는) 총 회원수를 알아오기
+select ceil( count(*) / '10' )
+from tbl_member
+where userid != 'admin'
+and name like '%'||'홍승의'||'%'
+
+
+SELECT userno, name, email, mobile, postcode, address, detailaddress, extraaddress, gender, 
+birthday, taste, point, registerday, pwdchangegap,
+nvl(lastlogingap, trunc( months_between(sysdate, registerday) ) ) AS lastlogingap 
+FROM 
+(
+select userno, name, email, mobile, postcode, address, detailaddress, extraaddress, gender 
+     , birthday, taste, point
+     , to_char(registerday, 'yyyy-mm-dd') AS registerday 
+     , trunc( months_between(sysdate, lastpwdchangedate) ) AS pwdchangegap 
+from tbl_member 
+where status = 1 and email = 'user@gmail.com' and password = '18006e2ca1c2129392c66d87334bd2452c572058d406b4e85f43c1f72def10f5'
+) M 
+CROSS JOIN
+(
+select trunc( months_between(sysdate, max(logindate)) ) AS lastlogingap 
+from KMS_TBL_LOGINHISTORY 
+where fk_userno = ? 
+) H
+-----------------------------------------------
+select userno, name, email, mobile, postcode, address, detailaddress, extraaddress
+, gender, birthday, taste, point, registerday, lastpwdchangedate, status, idle
+, trunc( months_between(sysdate, lastpwdchangedate) ) AS pwdchangegap
+, nvl(lastlogingap, trunc( months_between(sysdate, registerday) ) ) AS lastlogingap
+from tbl_member
+where status = 1 and email = 'RGeSdTNMw/jSEA9nfXgg0wugy+nsDN1uqdJE7Sd8JnQ=' and password = '18006e2ca1c2129392c66d87334bd2452c572058d406b4e85f43c1f72def10f5'
+
+select * from tbl_member
+where name = '김민성';
+
+
+
+
+
+
+
+
+select * from KMS_TBL_LOGINHISTORY
+
+String sql = "SELECT userno, name, email, mobile, postcode, address, detailaddress, extraaddress, gender, \n"+
+"birthday, taste, point, registerday, pwdchangegap,\n"+
+"nvl(lastlogingap, trunc( months_between(sysdate, registerday) ) ) AS lastlogingap \n"+
+"FROM \n"+
+"(\n"+
+"select userno, name, email, mobile, postcode, address, detailaddress, extraaddress, gender \n"+
+"     , birthday, taste, point\n"+
+"     , to_char(registerday, 'yyyy-mm-dd') AS registerday \n"+
+"     , trunc( months_between(sysdate, lastpwdchangedate) ) AS pwdchangegap \n"+
+"from tbl_member \n"+
+"where status = 1 and email = 'user@gmail.com' and password = '18006e2ca1c2129392c66d87334bd2452c572058d406b4e85f43c1f72def10f5'\n"+
+") M \n"+
+"CROSS JOIN\n"+
+"(\n"+
+"select trunc( months_between(sysdate, max(logindate)) ) AS lastlogingap \n"+
+"from tbl_loginhistory \n"+
+"where fk_userid = ? \n"+
+") H"
+
+select * from tbl_member;
+
+update tbl_member set idle = 1 
+where email = 'alstjddl8@naver.com'
+
+rollback;
+
+select userno from tbl_member where email = 'RGeSdTNMw/jSEA9nfXgg0wugy+nsDN1uqdJE7Sd8JnQ=';
+
+delete from tbl_member
+where userid = 'hongse53';
+
+commit;
+
+select * from row_number
+
+select snum, sname from tbl_spec order by snum asc;
+
+-----------------------------------------------
+select count(*)
+from tbl_product
+where fk_snum = 1;
+
+select count(*)
+from tbl_product
+where fk_snum = ( select snum from tbl_spec where sname = 'HIT' );
+
+
+select pnum, pname, code, pcompany, pimage1, pimage2, pqty, price, saleprice, sname, pcontent, point,
+pinputdate from ( select row_number() over(order by pnum asc) AS RNO , 
+pnum, pname, C.code, pcompany, pimage1, pimage2, pqty, price, saleprice, S.sname, pcontent, point ,
+to_char(pinputdate, 'yyyy-mm-dd') as pinputdate
+from tbl_product P JOIN tbl_category C ON P.fk_cnum = C.cnum JOIN tbl_spec S ON P.fk_snum = S.snum 
+where S.sname = 'HIT' ) V where RNO between 33 and 40;
+
+String sql = "select pnum, pname, code, pcompany, pimage1, pimage2, pqty, price, saleprice, sname, pcontent, point,\n"+
+"pinputdate from ( select row_number() over(order by pnum asc) AS RNO , \n"+
+"pnum, pname, C.code, pcompany, pimage1, pimage2, pqty, price, saleprice, S.sname, pcontent, point ,\n"+
+"to_char(pinputdate, 'yyyy-mm-dd') as pinputdate\n"+
+"from tbl_product P JOIN tbl_category C ON P.fk_cnum = C.cnum JOIN tbl_spec S ON P.fk_snum = S.snum \n"+
+"where S.sname = 'HIT' ) V where RNO between 33 and 40";

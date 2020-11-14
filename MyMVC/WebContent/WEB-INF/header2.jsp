@@ -52,22 +52,26 @@
 	
 	<div id="headerLink">
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-md-1">
 				<a href="<%= ctxPath %>/index.up">HOME</a>
 			</div>
 			
-			<div class="col-md-3">
+			<div class="col-md-1">
 				<a href="<%= ctxPath %>/member/memberform.up">회원가입</a>
 			</div>
 			
 			<c:if test="${ sessionScope.loginuser.name == '관리자' }">
-				<div class="col-md-4">
+				<div class="col-md-1">
 				<a href="<%= ctxPath %>/member/memberList.up">회원목록</a>
 				</div>
 			</c:if>
 			
-			<div class="col-md-3">
-				<a href="<%= ctxPath %>/member/memberList.jsp">쇼핑몰홈</a>
+			<div class="col-md-1">
+				<a href="<%= ctxPath %>/shop/mallHome1.up">쇼핑몰홈1</a>
+			</div>
+			
+			<div class="col-md-1">
+				<a href="<%= ctxPath %>/shop/mallHome2.up">쇼핑몰홈2</a>
 			</div>
 		</div>
 	</div>

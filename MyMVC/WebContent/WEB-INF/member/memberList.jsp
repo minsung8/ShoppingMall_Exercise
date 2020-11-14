@@ -15,6 +15,11 @@
 
 <style type="text/css">
 
+	tr.memberInfo:hover{
+		background-color : #e6ffe6;
+		cursor: pointer;
+	}
+	
 </style>
 
 <script>
@@ -35,7 +40,6 @@
 
 		});
 		 
-		
 		// select 태그에 대한 이벤트 = change
 		$("select#sizePerPage").bind("change", function() {
 			goSearch();
@@ -44,6 +48,11 @@
 		if ("${sizePerPage}" != "") {
 			$("select#sizePerPage").val("${sizePerPage}");
 		}
+
+		$("tr.memberInfo").click(function() {
+			var userid = $(this).children("td.userid").text();
+			location.href = "/MyMVC/member/memberOneDetail.up?userid=" + userid +"&goBackURL=${goBackURL}";
+		});
 		
 	});
 	
@@ -57,7 +66,7 @@
 	}
 </script>
 
-<body>
+<body>	
 <h2 style="margin: 20px;">::: 회원전체 목록 :::</h2>
     <form name="memberFrm"> 
  
@@ -90,8 +99,8 @@
  	   	  </thead>
  	    <tbody>
 			<c:forEach var="mvo" items="${memberList}">
-				<tr>
-					<td>${mvo.userid}</td>
+				<tr class="memberInfo">
+					<td class="userid">${mvo.userid}</td>
 					<td>${mvo.name}</td>
 					<td>${mvo.email}</td>
 					<td>
