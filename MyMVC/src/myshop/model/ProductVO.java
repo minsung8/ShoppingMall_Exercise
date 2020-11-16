@@ -159,6 +159,9 @@ public class ProductVO {
 		this.spvo = spvo;
 	}
 	
-	
+	// *** 제품의 할인률 ***
+	public int getDiscountPercent() { // 5000 : 3800 = 100 : x // x = (3800*100)/5000 // x = 76 // 100 - 76 ==> 24% 할인 // 할인률 = 100 - (판매가 * 100) / 정가 
+		return 100 - (saleprice * 100)/price;
+	}
 
 }

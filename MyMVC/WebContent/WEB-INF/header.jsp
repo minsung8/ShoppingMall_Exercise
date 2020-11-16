@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/css/style.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/jquery-ui-1.11.4.custom/jquery-ui.css" />
@@ -74,6 +75,12 @@
 				<a href="<%= ctxPath %>/shop/mallHome2.up">쇼핑몰홈2</a>
 			</div>
 			
+			<c:if test="${sessionScope.loginuser.userid eq 'admin' }">
+				<div class="col-md-2">
+					<a href="<%= ctxPath %>/shop/admin/productRegister.up">제품등록</a>
+				</div>
+			</c:if>
+			
 		</div>
 	</div>
 	
@@ -84,8 +91,10 @@
 				<%@ include file="/WEB-INF/login/login.jsp" %>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12" id="sideconent" style="text-align: left; padding: 20px;">
-			</div>
-		</div>	
+<%-- == 쇼핑몰 카테고리목록만을 보여주는 부분 == --%>
+		 <div class="row" style="margin-top: 250px;"> 
+		 	<div class="col-md-12" id="sideconent" style="text-align: left; padding: 20px;">
+		 		 <%@ include file="/WEB-INF/myshop/categoryList.jsp" %>
+		 	</div>
+		 </div>
 	</div>

@@ -14,7 +14,7 @@ import member.model.MemberDAO;
 import member.model.MemberVO;
 import my.util.MyUtil;
 
-public class MemberListAction2 extends AbstractController{
+public class MemberListAction extends AbstractController{
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {

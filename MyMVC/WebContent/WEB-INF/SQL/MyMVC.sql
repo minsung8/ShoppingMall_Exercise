@@ -4,6 +4,7 @@ SELECT * FROM tabs;
 select * from tbl_member
 where name = '김민성';
 
+
 delete from tbl_member
 where name = '김민성';
 
@@ -388,3 +389,10 @@ String sql = "select pnum, pname, code, pcompany, pimage1, pimage2, pqty, price,
 "to_char(pinputdate, 'yyyy-mm-dd') as pinputdate\n"+
 "from tbl_product P JOIN tbl_category C ON P.fk_cnum = C.cnum JOIN tbl_spec S ON P.fk_snum = S.snum \n"+
 "where S.sname = 'HIT' ) V where RNO between 33 and 40";
+
+
+
+SELECT cartno, fk_productcode, krproductname, productimg1, c.pprice, poqty
+						 FROM TBL_PRODUCT P RIGHT JOIN tbl_cart c
+						 ON p.productcode = c.fk_productcode
+						 WHERE fk_userno = '2011132457'

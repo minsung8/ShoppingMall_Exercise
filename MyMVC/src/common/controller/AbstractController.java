@@ -1,9 +1,15 @@
 package common.controller;
 
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import member.model.MemberVO;
+import myshop.model.InterProductDAO;
+import myshop.model.ProductDAO;
 
 public abstract class AbstractController implements InterCommand {
 
@@ -60,6 +66,17 @@ public abstract class AbstractController implements InterCommand {
 		} else {
 			return false;
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	
+	public void getCategoryList(HttpServletRequest request) throws SQLException {
+		
+		InterProductDAO pdao = new ProductDAO();
+		List<HashMap<String, String>> categoryList = pdao.getCategoryList();
+		
+		request.setAttribute("categoryList", categoryList);
+	
 	}
 	
 	

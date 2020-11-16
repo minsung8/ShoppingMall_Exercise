@@ -27,32 +27,56 @@
 </style>
 
 <script type="text/javascript">
+	
+	// 스크롤할 때 보여줄 상품의 개수
+	var lenHIT = 8;
+	
+	var start = 1;
 
 	$(document).ready(function(){
 		
 		$("span#totalHITCount").hide();
 		$("span#countHIT").hide();
 		
-		
 		displayHIT("1");
 		
-		// HIT 상품 게시물을 더보기 위하여 "더보기..." 버튼 클릭액션 이벤트 등록하기  
-		$("button#btnMoreHIT").click(function(){
+		
+		// ===== 스크롤 이벤트 발생시키기 시작 =====
+		$(window).scroll(function() {
 			
-			if($(this).text() == "처음으로") {
+			// console.log( $(window).scrollTop() );
+			
+			// 보여주어야할 문서의 높이값(더보기를 해주므로 append 되어져서 높이가 계속 증가 될것이다) //
+			// console.log( "$(document).height() => " + $(document).height() );
+			
+			// 웹브라우저창의 높이값(디바이스마다 다르게 표현되는 고정값) // 
+			// console.log( "$(window).height() => " + $(window).height() );
+			
+			if ( $(window).scrollTop() >= $(document).height() - $(window).height() ) {
+				
+				var totalHITCount = Number( $("span#totalHITCount").text() );
+				var countHIT = Number($("span#countHIT").text());
+				
+				if (totalHITCount != countHIT) {
+					start = start + lenHIT;
+					displayHIT(start);
+				}
+				
+			}
+			
+			if ( $(window).scrollTop() == 0 ) {
+				// 다시 처음부터 시작하도록 한다.
 				$("div#displayHIT").empty();
 				$("span#end").empty();
-				displayHIT("1");
-				$(this).text("더보기...");
-			}
-			else {
-				displayHIT($(this).val());  // displayHIT("9");
-                // displayHIT("17");
-                // displayHIT("25"); 
-                // displayHIT("33");	
+				$("span#countHIT").text("0");
+				
+				start = 1;
+				displayHIT(start);
 			}
 			
 		});
+		
+		// ===== 스크롤 이벤트 발생시키기 끝 =====
 		
 	}); // end of $(document).ready()-------------------------------
 	
@@ -113,22 +137,12 @@
 					// HIT 상품 결과를 출력하기
 					$("div#displayHIT").append(html);
 				
-					// >>> !!! 중요 !!! 더보기... 버튼의 value 속성에 값을 지정하기 <<< //  
-					$("button#btnMoreHIT").val( Number(start) + lenHIT );
-					// 더보기... 버튼의 value 값이  9  로 변경된다.
-					// 더보기... 버튼의 value 값이 17 로 변경된다.
-					// 더보기... 버튼의 value 값이 25 로 변경된다.
-					// 더보기... 버튼의 value 값이 33 로 변경된다.
-					// 더보기... 버튼의 value 값이 41 로 변경된다.
-				
 					// countHIT 에 지금까지 출력된 상품의 개수를 누적해서 기록한다.
 					$("span#countHIT").text( Number($("span#countHIT").text()) + json.length ); 
 					
 					// 더보기... 버튼을 계속해서 클릭하여 countHIT 값과 totalHITCount 값이 일치하는 경우 
 					if( $("span#countHIT").text() == $("span#totalHITCount").text() ) { 
 						$("span#end").html("더이상 조회할 제품이 없습니다.");
-						$("button#btnMoreHIT").text("처음으로");
-						$("span#countHIT").text("0");
 					}
 					
 					// header.jsp 의 하단에 표시된 div content 의 height 값을 구해서, header.jsp 의 div sideinfo 의 height 값으로 설정하기 
@@ -147,14 +161,13 @@
 
 </script>
 
-	<%-- === HIT 상품을 모두 가져와서 디스플레이(더보기 방식으로 페이징 처리한 것) === --%>
+	<%-- === HIT 상품을 모두 가져와서 디스플레이(스크롤 방식으로 페이징 처리한 것) === --%>
 	<div>
 		<div style="margin: 20px 0;" >- HIT 상품 -</div>
 		<div id="displayHIT"></div>
 	
 		<div style="margin: 20px 0;">
 			<span id="end" style="font-size: 16pt; font-weight: bold; color: red;"></span><br/> 
-			<button type="button" id="btnMoreHIT" value="">더보기...</button>
 			<span id="totalHITCount">${totalHITCount}</span>
 			<span id="countHIT">0</span>
 		</div>

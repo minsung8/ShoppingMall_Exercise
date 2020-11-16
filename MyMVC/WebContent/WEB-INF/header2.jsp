@@ -83,9 +83,11 @@
 				<%@ include file="/WEB-INF/login/login.jsp" %>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-12" id="sideconent" style="text-align: left; padding: 20px;">
-			</div>
-		</div>	
+<%-- == 쇼핑몰 카테고리목록만을 보여주는 부분 == --%>
+		 <div class="row" style="margin-top: 250px;"> 
+		 	<div class="col-md-12" id="sideconent" style="text-align: left; padding: 20px;">
+		 		 <%@ include file="/WEB-INF/myshop/categoryList.jsp" %>
+		 	</div>
+		 </div>
 	</div>
 	

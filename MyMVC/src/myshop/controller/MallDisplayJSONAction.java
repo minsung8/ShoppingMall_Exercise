@@ -23,9 +23,7 @@ public class MallDisplayJSONAction extends AbstractController{
 		String sname = request.getParameter("sname");
 		String start = request.getParameter("start");
 		String len = request.getParameter("len");
-		
-		System.out.println(start);
-		System.out.println(len);
+
 		
 		// 맨 처음에는 1 ~ 8, 더보기 button 누르면 8 ~ 17 , ...
 		
@@ -62,15 +60,14 @@ public class MallDisplayJSONAction extends AbstractController{
 				jsonObj.put("pcontent", pvo.getPcontent());
 				jsonObj.put("point", pvo.getPoint());
 				jsonObj.put("pinputdate", pvo.getPinputdate());
+				jsonObj.put("discoutPercent", pvo.getDiscountPercent());
 				
 				jsonArr.put(jsonObj);
 			
 			}
 			
 			String json = jsonArr.toString();
-			
-			System.out.println(json);
-			
+						
 			request.setAttribute("json", json);
 		
 			super.setRedirect(false);

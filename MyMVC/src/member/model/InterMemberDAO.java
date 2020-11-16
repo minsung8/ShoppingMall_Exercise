@@ -1,6 +1,7 @@
 package member.model;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,8 @@ public interface InterMemberDAO {
 	
 	// userid값으로 회원 한명의 상세정보 알아오기
 	MemberVO MemberOneDetail(String userid);
+	
+
 	
 }
 

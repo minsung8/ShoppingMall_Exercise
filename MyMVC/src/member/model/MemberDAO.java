@@ -647,4 +647,5 @@ public class MemberDAO implements InterMemberDAO {
 		
 	}
 
+
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -154,6 +155,55 @@ public class ProductDAO implements InterProductDAO{
 		}
 		
 		return prodList;
+	}
+	
+	// tbl_category 테이블에서 카테고리 대분류 번호(cnum), 카테고리코드(code), 카테고리명(cname)을 조회해오기 
+	// VO 를 사용하지 않고 Map 으로 처리해보겠습니다.
+	@Override
+	public List<HashMap<String, String>> getCategoryList() throws SQLException {
+		List<HashMap<String, String>> categoryList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select cnum, code, cname " + " from tbl_category " + " order by cnum asc "; 
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				HashMap<String, String> map = new HashMap<>();
+				map.put("cnum", rs.getString(1));
+				map.put("code", rs.getString(2));
+				map.put("cname", rs.getString(3));
+				categoryList.add(map); 
+				
+			}// end of while(rs.next())---------------------------------- } finally { close(); } return categoryList; }
+		}finally { close(); } 
+		
+		return categoryList;
+	}
+
+	@Override
+	public List<SpecVO> selectSpecList() throws SQLException {
+		
+		List<SpecVO> specList = new ArrayList<>();
+		
+		try {
+			conn = ds.getConnection();
+			String sql = " select snum, sname " + " from tbl_spec " + " order by snum asc "; 
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				SpecVO svo = new SpecVO();
+				svo.setSnum(rs.getInt(1));
+				svo.setSname(rs.getString(2));
+				specList.add(svo); 
+				
+			}// end of while(rs.next())---------------------------------- } finally { close(); } return categoryList; }
+		}finally { close(); } 
+		
+		
+		return specList;
 	}
 
 }
