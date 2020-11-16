@@ -16,6 +16,7 @@ table#tblProdInput td {border: solid gray 1px; padding-left: 10px; height: 50px;
 <script type="text/javascript">
 
 $(document).ready(function(){
+	
 	$(".error").hide(); $("#spinnerPqty").spinner({ });
 	// end of $("#spinnerPqty").spinner()-------- 
 	
@@ -25,9 +26,51 @@ $(document).ready(function(){
 			else if(ui.value < 1) { $(this).spinner("value", 1); return false; } } 
 	});// end of $("#spinnerPqty").spinner()--------
 	
-	$("#spinnerImgQty").bind("spinstop", function(){ });
+	$("input#spinnerImgQty").spinner({
+		spin:function(event,ui){ 
+			if(ui.value > 10) { $(this).spinner("value", 10); return false; } 
+			else if(ui.value < 0) { $(this).spinner("value", 0); return false; } } 
+	});// end of $("#spinnerPqty").spinner()--------
 	
-	$("#btnRegister").click(function(){ }); 
+	
+	
+	$("input#spinnerImgQty").bind("spinstop", function(){
+		// alert($(this).val());
+		
+		var html = "";
+		var cnt = $(this).val();
+		
+		for ( var i=0; i<parseInt(cnt); i++ ) {
+			
+			html += "<br>";
+			html += "<input type='file' name='attach"+i+"' class='btn btn-default'/>"
+			
+		}
+		$("div#divfileattach").empty();
+		$("div#divfileattach").append(html);
+		$("input#attachCount").val(cnt);
+		
+	});
+	
+	$("#btnRegister").click(function(){
+		
+		var flag = false;
+		
+		$(".infoData").each(function(){
+			var val = $(this).val().trim();
+			if(val == "") { 
+				$(this).next().show(); 
+				flag = true;
+				return false; 
+				} 
+			}); 
+		
+		if(!flag) {
+			var frm = document.prodInputFrm; 
+			frm.submit(); 
+			}
+		
+	}); 
 	
 	}); // end of $(document).ready();-------------- 
 	
@@ -125,7 +168,8 @@ $(document).ready(function(){
                                              <td>
                                               <label for="spinnerImgQty">파일갯수 : </label> 
                                               <input id="spinnerImgQty" value="0" style="width: 30px; height: 20px;">
-                                               <div id="divfileattach"></div> <input type="hidden" name="attachCount" id="attachCount" />
+                                               <div id="divfileattach"></div>
+                                                <input type="hidden" name="attachCount" id="attachCount" />
                                                 </td> </tr> <tr style="height: 70px;">
                                                 
                                                  <td colspan="2" align="center" style="border-left: hidden; border-bottom: hidden; border-right: hidden;">
