@@ -169,7 +169,11 @@ $(document).ready(function(){
                                               <label for="spinnerImgQty">파일갯수 : </label> 
                                               <input id="spinnerImgQty" value="0" style="width: 30px; height: 20px;">
                                                <div id="divfileattach"></div>
-                                                <input type="hidden" name="attachCount" id="attachCount" />
+                                               
+                                               
+                                                <input type="hidden" name="attachCount" id="attachCount" value="0"/>
+                                                
+                                                
                                                 </td> </tr> <tr style="height: 70px;">
                                                 
                                                  <td colspan="2" align="center" style="border-left: hidden; border-bottom: hidden; border-right: hidden;">

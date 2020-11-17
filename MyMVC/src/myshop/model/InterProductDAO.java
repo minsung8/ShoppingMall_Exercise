@@ -22,4 +22,20 @@ public interface InterProductDAO {
 	
 	// VO를 사용하여 spec 조회
 	List<SpecVO> selectSpecList() throws SQLException;
+	
+	// 제품번호 채번 해오기
+	int getPnumOfProduct() throws SQLException;
+	
+	// tbl_product 테이블에 제품정보 insert 하기
+	int productInsert(ProductVO pvo) throws SQLException;
+	
+	// image 파일명 insert
+	int product_imagefile_Insert(int pnum, String attachFileName) throws SQLException;
+	
+	
+	// 해당 제품의 상세정보
+	ProductVO selectOneProductByPnum(String pnum) throws SQLException;
+	
+	// 추가된 이미지 정보 조회
+	List<String> getImagesByPnum(String pnum) throws SQLException;
 }

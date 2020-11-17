@@ -15,6 +15,7 @@ import common.controller.AbstractController;
 import member.model.MemberVO;
 import myshop.model.InterProductDAO;
 import myshop.model.ProductDAO;
+import myshop.model.ProductVO;
 import myshop.model.SpecVO;
 
 public class ProductRegisterAction extends AbstractController{
@@ -73,7 +74,111 @@ public class ProductRegisterAction extends AbstractController{
 						super.setViewPage("/WEB-INF/msg.jsp"); 
 						return; 
 						}
-				// 다음으로 DB에 업로드 된 제품정보를 테이블에 Insert를 해주어야 한다.
+				
+				// form 태그에서 입력된 값 가져오기
+				String fk_cnum = mtrequest.getParameter("fk_cnum");
+				String pname = mtrequest.getParameter("pname");
+				String pcompany = mtrequest.getParameter("pcompany");
+				
+				// 업로드되어진 시스템의 첨부파일 이름을 얻어 올때는
+				// cos.jar 라이브러리에서 제공하는 MultipartRequest 객체의 getFilesystemName("form에서의 첨부파일 name명") 메소드를 사용 한다.
+				// 이때 업로드 된 파일이 없는 경우에는 null을 반환한다. 
+				String pimage1 = mtrequest.getFilesystemName("pimage1"); 
+				String pimage2 = mtrequest.getFilesystemName("pimage2");
+				
+				/* <<참고>> ※ MultipartRequest 메소드
+				 *  -------------------------------------------------- 반환타입 설명 -------------------------------------------------- 
+				 *  Enumeration getFileNames() 업로드 된 파일들에 대한 이름을 Enumeration객체에 String형태로 담아 반환한다. 
+				 *  이때의 파일 이름이란 클라이언트 사용자에 의해서 선택된 파일의 이름이 아니라, 개발자가 form의 file타임에 name속성으로 설정한 이름을 말한다. 
+				 *  만약 업로드 된 파일이 없는 경우엔 비어있는 Enumeration객체를 반환한다. 
+				 *  
+				 *  String getContentType(String name) 업로드 된 파일의 컨텐트 타입을 얻어올 수 있다. 
+				 *  이 정보는 브라우저로부터 제공받는 정보이다. 이때 업로드 된 파일이 없는 경우에는 null을 반환한다. 
+				 *  
+				 *  File getFile(String name) 업로드 된 파일의 File객체를 얻는다. 
+				 *  우리는 이 객체로부터 파일사이즈 등의 정보를 얻어낼 수 있다. 이때 업로드 된 파일이 없는 경우에는 null을 반환한다. 
+				 *  
+				 *  String getFilesystemName(String name) 시스템의 파일 이름을 반환한다. 
+				 *  이때 업로드 된 파일이 없는 경우에는 null을 반환한다. 
+				 *  
+				 *  String getOriginalFimeName(String name) 중복 파일 처리 인터페이스에 의해 변환되기 이전의 파일 이름을 반환한다.
+				 *  이때 업로드 된 파일이 없는 경우에는 null을 반환한다. 
+				 *  
+				 *  String getParameter(String name) 지정한 파라미터의 값을 반환한다. 이때 전송된 값이 없을 경우에는 null을 반환한다. 
+				 *  
+				 *  Enumeration getParameternames() 폼을 통해 전송된 파라미터들의 이름을 Enumeration객체에 String 형태로 담아 반환한다. 
+				 *  전송된 파라미터가 없을 경우엔 비어있는 Enumeration객체를 반환한다 
+				 *  
+				 *  String[] getparameterValues(String name) 동일한 파라미터 이름으로 전송된 값들을 String배열로 반환한다. 
+				 *  이때 전송된파라미터가 없을 경우엔 null을 반환하게 된다. 동일한 파라미터가 단 하나만 존재하는 경우에는 하나의 요소를 지닌 배열을 반환하게 된다. */
+				
+				String pqty = mtrequest.getParameter("pqty"); 
+				String price = mtrequest.getParameter("price");
+				String saleprice = mtrequest.getParameter("saleprice"); 
+				String fk_snum = mtrequest.getParameter("fk_snum");
+
+				
+				// 크로스 사이트 스크립트 공격에 대응하는 시큐어 코드 필요
+				String pcontent = mtrequest.getParameter("pcontent");
+				pcontent.replaceAll("<", "&lt;");
+				pcontent.replaceAll(">", "&gt;");
+				
+				// 입력한 내용에서 엔터는 <br>로 변환
+				pcontent.replaceAll("\r\n", "<br>");
+				
+				String point = mtrequest.getParameter("point");
+				
+				InterProductDAO pdao =  new ProductDAO();
+				ProductVO pvo = new ProductVO();
+				
+				int pnum = pdao.getPnumOfProduct();	// 제품번호 채번해오기
+				
+				pvo.setPnum(pnum);
+				pvo.setFk_cnum( Integer.parseInt(fk_cnum) );
+				
+				pvo.setPname(pname);
+				pvo.setPcompany(pcompany); 
+				pvo.setPimage1(pimage1); 
+				pvo.setPimage2(pimage2); 
+				pvo.setPqty(Integer.parseInt(pqty)); 
+				pvo.setPrice(Integer.parseInt(price));
+				pvo.setSaleprice(Integer.parseInt(saleprice)); 
+				pvo.setFk_snum(Integer.parseInt(fk_snum)); 
+				pvo.setPcontent(pcontent);
+				pvo.setPoint(Integer.parseInt(point));
+				
+				int n = pdao.productInsert(pvo);
+				int m = 1;
+				
+				String str_attachCount = mtrequest.getParameter("attachCount"); // 추가 이미지 개수 (0 ~ 10)
+				int attachCount = Integer.parseInt(str_attachCount);
+				
+				
+				for (int i=0; i<attachCount; i++) {
+					// 첨부파일의 파일명 알아오기
+					// String attachFileName = mtrequest.getFilesystemName("attach" + i);
+					String attachFileName = mtrequest.getFilesystemName("attach" + i);
+					
+					// tbl_product_imagefile 테이블에 제품의 추가이미지 파일명 insert 해주기 ,  pnum은 채번된 번호
+					m = pdao.product_imagefile_Insert(pnum, attachFileName);
+					
+					if (m == 0) break;
+					
+				}
+				
+				String message = ""; 
+				String loc = ""; 
+				
+				if(n*m==1) {
+					message = "제품등록 성공!!"; 
+					loc = request.getContextPath()+"/shop/mallHome1.up"; 
+					} else { 
+						message = "제품등록 실패!!"; 
+						loc = request.getContextPath()+"/shop/admin/productRegister.up"; 
+					} 
+				request.setAttribute("message", message); 
+				request.setAttribute("loc", loc); 
+				super.setViewPage("/WEB-INF/msg.jsp");
 				
 				}
 			

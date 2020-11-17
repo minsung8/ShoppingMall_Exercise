@@ -1,7 +1,7 @@
 show user;
 
 SELECT * FROM tabs;
-select * from tbl_member
+select * from TBL_PRODUCT
 where name = '김민성';
 
 
@@ -396,3 +396,22 @@ SELECT cartno, fk_productcode, krproductname, productimg1, c.pprice, poqty
 						 FROM TBL_PRODUCT P RIGHT JOIN tbl_cart c
 						 ON p.productcode = c.fk_productcode
 						 WHERE fk_userno = '2011132457'
+                         
+
+select *
+rom tbl_product
+order by pnum desc;
+
+-- 채번하기
+select seq_tbl_product_pnum.nextval
+from dual;
+
+select * from tbl_product
+where pnum = 117
+commit;
+
+delete from tbl_product
+where pnum = 119
+
+
+
