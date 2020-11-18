@@ -21,7 +21,7 @@ public class MallHome2Action extends AbstractController{
 		int totalHITCount = pdao.totalPspecCount("1");	// HIT 상품의 전체개수를 알아온다.
 		
 		System.out.println("확인용" + totalHITCount);
-		
+		super.goBackURL(request);
 		request.setAttribute("totalHITCount", totalHITCount);
 		
 		super.setRedirect(false);

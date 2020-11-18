@@ -13,6 +13,9 @@ public class MyUtil {
 		
 		String queryString = request.getQueryString(); // ? 다음 URL 부분
 		// currentShowPageNo=11&sizePerPage=5&searchType=name&searchWord=홍승의
+		if (queryString != null) {
+			queryString += "?" + queryString;
+		}
 		
 		currentURL += "?" + queryString;
 		// http://localhost:9090/MyMVC/member/memberList.up?currentShowPageNo=11&sizePerPage=5&searchType=name&searchWord=%ED%99%8D%EC%8A%B9%EC%9D%98
@@ -29,6 +32,16 @@ public class MyUtil {
 		// / 포함 절대경로 => 빼줘야 함
 		
 		return currentURL;
+	}
+	
+	// 시큐어 코드 작성
+	public static String secureCode(String str) {
+		
+		str = str.replaceAll("<", "&lt;");
+		str = str.replaceAll(">", "&lt;");
+		
+		return str;
+		
 	}
 	
 }

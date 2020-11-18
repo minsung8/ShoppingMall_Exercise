@@ -413,5 +413,26 @@ commit;
 delete from tbl_product
 where pnum = 119
 
+select * from tbl_shipping_test where ship_seq = 4;
+delete from tbl_shipping_test where ship_seq = 4;
 
 
+create table tbl_purchase_reviews (review_seq number 
+,fk_userid varchar2(20) not null -- 사용자ID 
+,fk_pnum number(8) not null -- 제품번호(foreign key) 
+,contents varchar2(4000) not null 
+,writeDate date default sysdate
+,constraint PK_purchase_reviews primary key(review_seq)
+,constraint FK_purchase_reviews_userid foreign key(fk_userid) references tbl_member(userid) 
+,constraint FK_purchase_reviews_pnum foreign key(fk_pnum) references tbl_product(pnum) );
+
+create sequence seq_purchase_reviews start with 1 increment by 1 nomaxvalue nominvalue nocycle nocache;
+
+select * from tbl_purchase_reviews order by review_seq desc;
+
+select review_seq, name, fk_pnum, contents, to_char(writeDate, 'yyyy-mm-dd hh24:mi:ss') AS writeDate from tbl_purchase_reviews R join tbl_member M on R.fk_userid = M.userid where R.fk_pnum = 3 order by review_seq desc;
+
+
+select * from TBL_MEMBER;
+
+update tbl_member set password = '1234' where email = 'EkosdIU2YH31RZXPVhGtpL+CeLX4hdrhn+6o+6r/qgA=';

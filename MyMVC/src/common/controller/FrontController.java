@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(
+		
 		description = "사용자가 웹에서 *.up 을 했을 경우 이 서블릿이 먼저 응답을 해주도록 한다.", 
 		urlPatterns = { "*.up" }, 
 		initParams = { 

@@ -32,10 +32,16 @@ public interface InterProductDAO {
 	// image 파일명 insert
 	int product_imagefile_Insert(int pnum, String attachFileName) throws SQLException;
 	
-	
 	// 해당 제품의 상세정보
 	ProductVO selectOneProductByPnum(String pnum) throws SQLException;
 	
 	// 추가된 이미지 정보 조회
 	List<String> getImagesByPnum(String pnum) throws SQLException;
+	
+	// Ajax를 이용한 특정 제품의 상품후기를 입력하기
+	int addComment(PurchaseReviewsVO reviewsvo) throws SQLException;
+	
+	// Ajax를 이용한 특정 제품의 상품후기를 조회(select)하기
+	List<PurchaseReviewsVO> commentList(String fk_pnum) throws SQLException;
+	
 }

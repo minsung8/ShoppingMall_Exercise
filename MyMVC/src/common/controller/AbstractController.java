@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import member.model.MemberVO;
+import my.util.MyUtil;
 import myshop.model.InterProductDAO;
 import myshop.model.ProductDAO;
 
@@ -79,6 +80,13 @@ public abstract class AbstractController implements InterCommand {
 	
 	}
 	
+	// 로그인을 하면 페이지 유지 기능
+	public void goBackURL(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("goBackURL", MyUtil.getCurrentURL(request));
+		
+	}
 	
 }
 

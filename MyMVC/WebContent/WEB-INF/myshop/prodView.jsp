@@ -3,10 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <jsp:include page="../header.jsp" />
-<link rel="stylesheet" type="text/css"
-	href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
-<script type="text/javascript"
-	src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 <style type="text/css">
 .line {
 	border: 0px solid red;
@@ -66,8 +64,10 @@ div.commentDel {
 <script type="text/javascript"> 
 
 $(document).ready(function() { 
+		
+	func_height(); // footer.jsp 에 있는 것임.
 	
-	func_height(); // footer.jsp 에 있는 것임. 
+	goCommentListView();
 	
 	$("input#spinner").spinner( {
 		spin: function(event, ui) {
@@ -89,7 +89,10 @@ $(document).ready(function() {
 	// **** 제품후기 쓰기 ****// 
 	$("button.btnCommentOK").click(function(){
 		
+		alert("버튼 클릭 성공");
+		
 		if( ${ empty sessionScope.loginuser} ) {
+
 			alert("제품사용 후기를 작성하시려면 먼저 로그인 하셔야 합니다."); 
 			return; 
 		}
@@ -99,9 +102,20 @@ $(document).ready(function() {
 		if(commentContents == "") { 
 			alert("제품후기 내용을 입력하세요!!"); 
 			return; 
-		} // jQuery에서 사용하는 것으로써, // form태그의 선택자.serialize(); 을 해주면 form 태그내의 모든 값들을 name값을 키값으로 만들어서 보내준다. 
+		} 
 		
-		var queryString = $("form[name=commentFrm]").serialize(); // 
+/* 		// 보내야할 데이터를 선정하는 첫번째 방법
+		var queryString = {"fk_userid":'${sessionScope.loginuser.userid}',
+						"fk_pnum":${pvo.pnum},
+						"contents":$("textarea#commentContents").val()
+		}; */
+		
+		// 보내야할 데이터를 선정하는 두번째 방법
+		// jQuery에서 사용하는 것으로써, 
+		// form태그의 선택자.serialize(); 을 해주면 form 태그내의 모든 값들을 name값을 키값으로 만들어서 보내준다. 
+		
+		var queryString = $("form[name=commentFrm]").serialize(); 
+		
 		console.log(queryString); // commentContents=Good&pnum=3 
 		
 		$.ajax({ 
@@ -110,27 +124,32 @@ $(document).ready(function() {
 			data:queryString, 
 			success:function(){ 
 				// alert("확인용 : 제품후기 글쓰기 성공!!"); 
+				
 				goCommentListView(); // 제품후기글을 보여주는 함수호출하기
 				$("textarea#commentContents").val("").focus(); }, 
+				
 				error: function(request, status, error){ 
 					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error); 
 					} 
 				}); 
 		}); 
-	}); // end of $(document).ready();------------------------------ // 특정 제품의 제품후기글들을 보여주는 함수 
+	}); // end of $(document).ready();------------------------------ 
 	
+	// 특정 제품의 제품후기글들을 보여주는 함수 
 	function goCommentListView() { 
 		
 		$.ajax({ url:"/MyMVC/shop/commentList.up", 
 			type:"GET", 
-			data:{"pnum":"${pvo.pnum}"}, 
+			data:{"fk_pnum":${pvo.pnum}}, 
 			dataType:"JSON", 
 			success:function(json) { 
 				
 				var html = ""; if (json.length > 0) { 
 					$.each(json, function(index, item){ 
-						html += "<div> <span class='markColor'>▶</span> "+item.contents+"</div>" + "<div class='customDisplay'>"+item.name+"</div>" 
-						+ "<div class='customDisplay'>"+item.writeDate+"</div>" + "<div class='customDisplay commentDel'>후기삭제</div>"; } ); 
+						html += "<div> <span class='markColor'>▶</span> "+item.contents+"</div>" 
+						+ "<div class='customDisplay'>"+item.name+"</div>" 
+						+ "<div class='customDisplay'>"+item.writeDate+"</div>" 
+						+ "<div class='customDisplay commentDel'>후기삭제</div>"; } ); 
 				}// end of if ----------------------- 
 				
 				else { 
@@ -151,7 +170,7 @@ $(document).ready(function() {
 	} 
 	
 	// **** 특정제품에 대한 좋아요 등록하기 **** // 
-	function golikeAdd(pnum) { 
+	/* function golikeAdd(pnum) { 
 		$.ajax({ url:"/MyMVC/shop/likeAdd.up", type:"POST", data:{
 										"pnum":pnum, "userid":"${sessionScope.loginuser.userid}"}, 
 										dataType:"JSON", 
@@ -213,7 +232,7 @@ $(document).ready(function() {
 					// 주문개수가 1개 이상인 경우 
 					frm.method = "POST"; 
 					frm.action = "/MyMVC/shop/cartAdd.up"; frm.submit(); } 
-</script>
+ */</script>
 
 <div style="width: 95%;">
 	<div class="row">
@@ -315,7 +334,8 @@ $(document).ready(function() {
 		<div>
 			<button type="button" class="customHeight btnCommentOK">후기등록</button>
 		</div>
-		<input type="hidden" name="pnum" value="${pvo.pnum}" />
+		<input type="hidden" name="fk_pnum" value="${pvo.pnum}" />
+		<input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
 	</form>
 </div>
 <jsp:include page="../footer.jsp" />

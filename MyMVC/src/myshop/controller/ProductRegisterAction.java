@@ -120,11 +120,11 @@ public class ProductRegisterAction extends AbstractController{
 				
 				// 크로스 사이트 스크립트 공격에 대응하는 시큐어 코드 필요
 				String pcontent = mtrequest.getParameter("pcontent");
-				pcontent.replaceAll("<", "&lt;");
-				pcontent.replaceAll(">", "&gt;");
+				pcontent = pcontent.replaceAll("<", "&lt;");
+				pcontent = pcontent.replaceAll(">", "&gt;");
 				
 				// 입력한 내용에서 엔터는 <br>로 변환
-				pcontent.replaceAll("\r\n", "<br>");
+				pcontent = pcontent.replaceAll("\r\n", "<br>");
 				
 				String point = mtrequest.getParameter("point");
 				

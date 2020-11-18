@@ -592,7 +592,7 @@
 		<tr>
 			<td style="width: 20%; font-weight: bold;">연락처</td>
 			<td style="width: 80%; text-align: left;">
-			    <input type="text" id="hp1" name="hp1" size="6" maxlength="3" value="010" />&nbsp;-&nbsp;
+			    <input type="text" id="hp1" name="hp1" size="6" maxlength="3" value="010" readonly />&nbsp;-&nbsp;
 			    <input type="text" id="hp2" name="hp2" size="6" maxlength="4" />&nbsp;-&nbsp;
 			    <input type="text" id="hp3" name="hp3" size="6" maxlength="4" />
 			    <span class="error">휴대폰 형식이 아닙니다.</span>
