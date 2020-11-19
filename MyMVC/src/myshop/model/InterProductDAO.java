@@ -44,4 +44,13 @@ public interface InterProductDAO {
 	// Ajax를 이용한 특정 제품의 상품후기를 조회(select)하기
 	List<PurchaseReviewsVO> commentList(String fk_pnum) throws SQLException;
 	
+	// 좋아요 추가
+	int likeAdd(Map<String, String> paraMap) throws SQLException;
+	
+	// 싫어요 추가
+	int dislikeAdd(Map<String, String> paraMap) throws SQLException;
+	
+	// 특정 제품에 대해 좋아요, 싫어요의
+	Map<String, Integer> getLikeDislikeCount(String pnum);
+	
 }

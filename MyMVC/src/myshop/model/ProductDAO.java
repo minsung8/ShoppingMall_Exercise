@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -432,6 +433,121 @@ public class ProductDAO implements InterProductDAO {
 		}
 	
 		return CommentList;
+	}
+
+	@Override
+	public int likeAdd(Map<String, String> paraMap) throws SQLException {
+		int n = 0;
+
+		try {
+			conn = ds.getConnection();
+			
+			conn.setAutoCommit(false);		// 수동 commit으로 
+			
+			String sql = " delete from tbl_product_like where fk_userid = ? and fk_pnum = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, paraMap.get("pnum"));
+			
+			// ----------------------------------------------------------------------------------
+			
+			sql = " insert into tbl_product_dislike(fk_userid, fk_pnum) values (?, ?) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, paraMap.get("pnum"));
+			
+			n = pstmt.executeUpdate();
+
+			if (n == 1) {
+				conn.commit();			// 성공 시 commit
+			}
+		
+		} catch(SQLIntegrityConstraintViolationException e ) {
+			conn.rollback();		// 실패 시 commit	
+		} finally {
+			close();
+		}
+		return n;
+	}
+
+	@Override
+	public int dislikeAdd(Map<String, String> paraMap) throws SQLException {
+		int n = 0;
+
+		try {
+			conn = ds.getConnection();
+			
+			conn.setAutoCommit(false);		// 수동 commit으로 
+			
+			String sql = " delete from tbl_product_dislike where fk_userid = ? and fk_pnum = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, paraMap.get("pnum"));
+			
+			// ----------------------------------------------------------------------------------
+			
+			sql = " insert into tbl_product_like(fk_userid, fk_pnum) values (?, ?) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, paraMap.get("userid"));
+			pstmt.setString(2, paraMap.get("pnum"));
+			
+			n = pstmt.executeUpdate();
+
+			if (n == 1) {
+				conn.commit();			// 성공 시 commit
+			}
+		
+		} catch(SQLIntegrityConstraintViolationException e ) {
+			conn.rollback();		// 실패 시 commit	
+		} finally {
+			close();
+		}
+		return n;
+	}
+
+	@Override
+	public Map<String, Integer> getLikeDislikeCount(String pnum) {
+		
+		Map<String, Integer> map = new HashMap<>();
+		
+		try {
+			conn = ds.getConnection();
+
+			String sql = "select (select count(*)\n"+
+			"        from tbl_product_like\n"+
+			"        where fk_pnum = ?\n"+
+			"        ) as LIKECNT,\n"+
+			"        (select count(*)\n"+
+			"        from tbl_product_dislike\n"+
+			"        where fk_pnum = ?\n"+
+			"        ) as DISLIKECNT\n"+
+			"from dual";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, pnum);
+			pstmt.setString(2, pnum);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+
+				map.put("likecnt", rs.getInt(1));
+				map.put("dislikecnt", rs.getInt(2));
+
+			}
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			close();
+		}
+		
+		return map;
 	}
 
 }

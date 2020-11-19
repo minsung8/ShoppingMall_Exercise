@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <jsp:include page="../header.jsp" />
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 <style type="text/css">
 .line {
@@ -170,16 +171,24 @@ $(document).ready(function() {
 	} 
 	
 	// **** 특정제품에 대한 좋아요 등록하기 **** // 
-	/* function golikeAdd(pnum) { 
-		$.ajax({ url:"/MyMVC/shop/likeAdd.up", type:"POST", data:{
-										"pnum":pnum, "userid":"${sessionScope.loginuser.userid}"}, 
-										dataType:"JSON", 
-									success:function(json) { 
-										//alert(json.msg); 
-										swal(json.msg); goLikeDislikeCount(); }, 
-										error: function(request, status, error){ 
-											alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error); } }); 
-		}// end of golikeAdd(pnum)--------------- 
+	function golikeAdd(pnum) { 
+		
+		$.ajax({ url:"/MyMVC/shop/likeAdd.up",
+			type:"POST",
+			data:{"pnum":pnum, "userid":"${sessionScope.loginuser.userid}"}, 
+			dataType:"JSON", 
+			success:function(json) { 
+				// alert(json.msg); 
+				swal(json.msg); 
+				goLikeDislikeCount(); 
+			}, 
+			error: function(request, status, error){ 
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error); 
+				} 
+		}); 
+	}// end of golikeAdd(pnum)--------------- 
+		
+		
 		
 		// **** 특정제품에 대한 싫어요 등록하기 **** // 
 		function godisLikeAdd(pnum) {
@@ -189,9 +198,11 @@ $(document).ready(function() {
 				data:{"pnum":pnum, "userid":"${sessionScope.loginuser.userid}"}, 
 				dataType:"JSON", 
 				success:function(json) { 
-					//alert(json.msg); 
-					swal(json.msg); goLikeDislikeCount(); }, 
-					error: function(request, status, error){ 
+					// alert(json.msg); 
+					swal(json.msg); 
+					goLikeDislikeCount(); 
+					}, 
+				error: function(request, status, error){ 
 						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error); } }); 
 			}// end of golikeAdd(pnum)--------------- // 
 			
@@ -219,8 +230,8 @@ $(document).ready(function() {
 					
 					if(!bool) { // 숫자 이외의 값이 들어온 경우 
 						alert("주문갯수는 1개 이상이어야 합니다."); 
-					frm.oqty.value = "1"; 
-					frm.oqty.focus(); return; } 
+						frm.oqty.value = "1"; 
+						frm.oqty.focus(); return; } 
 					
 					// 문자로 숫자가 들어온 경우 
 					oqty = parseInt(oqty); 
@@ -232,7 +243,7 @@ $(document).ready(function() {
 					// 주문개수가 1개 이상인 경우 
 					frm.method = "POST"; 
 					frm.action = "/MyMVC/shop/cartAdd.up"; frm.submit(); } 
- */</script>
+ </script>
 
 <div style="width: 95%;">
 	<div class="row">

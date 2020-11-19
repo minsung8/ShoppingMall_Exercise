@@ -1,8 +1,14 @@
 show user;
 
 SELECT * FROM tabs;
-select * from TBL_PRODUCT
+select * from TBL_PRODUCT;
+
+
+select * from tbl_member
 where name = '김민성';
+
+RGeSdTNMw/jSEA9nfXgg0wugy+nsDN1uqdJE7Sd8JnQ=
+
 
 
 delete from tbl_member
@@ -436,3 +442,79 @@ select review_seq, name, fk_pnum, contents, to_char(writeDate, 'yyyy-mm-dd hh24:
 select * from TBL_MEMBER;
 
 update tbl_member set password = '1234' where email = 'EkosdIU2YH31RZXPVhGtpL+CeLX4hdrhn+6o+6r/qgA=';
+
+desc tbl_member;
+
+create table tbl_product_like
+(fk_userid varchar2(20) not null,
+fk_pnum     number(8) not null,
+constraint PK_tbl_product_like primary key(fk_userid, fk_pnum),
+constraint PK_tbl_product_like_userid foreign key(fk_userid) references tbl_member(userid),
+constraint PK_tbl_product_like_pnum foreign key(fk_pnum) references tbl_product(pnum)
+);
+
+
+create table tbl_product_dislike
+(fk_userid varchar2(20) not null,
+fk_pnum     number(8) not null,
+constraint PK_tbl_product_dislike primary key(fk_userid, fk_pnum),
+constraint PK_tbl_product_dislike_userid foreign key(fk_userid) references tbl_member(userid),
+constraint PK_tbl_product_dislike_pnum foreign key(fk_pnum) references tbl_product(pnum)
+);
+
+
+select *
+from tbl_product_like;
+
+delete from tbl_product_dislike where fk_userid = 'kms' and fk_pnum =58;
+insert into tbl_product_like(fk_userid, fk_pnum) values ('kms', 58);
+commit;
+
+select * from tbl_product_like;
+select * from tbl_member;
+
+
+
+delete from tbl_product_dislike where fk_userid = 'kms' and fk_pnum =58;
+insert into tbl_product_dislike(fk_userid, fk_pnum) values ('kms', 58);
+commit;
+
+
+
+select count(*) from tbl_product_like
+where fk_pnum = 58;                                                                                                 
+
+select count(*) from tbl_product_dislike
+where fk_pnum = 58;
+
+select count(*) from tbl_product_like
+where fk_pnum = 58; 
+
+
+
+select (select count(*)
+        from tbl_product_like
+        where fk_pnum = 58
+        ) as LIKECNT,
+        (select count(*)
+        from tbl_product_dislike
+        where fk_pnum = 58
+        ) as DISLIKECNT
+from dual;
+
+
+
+
+
+
+
+String sql = "select (select count(*)\n"+
+"        from tbl_product_like\n"+
+"        where fk_pnum = 58\n"+
+"        ) as LIKECNT,\n"+
+"        (select count(*)\n"+
+"        from tbl_product_dislike\n"+
+"        where fk_pnum = 58\n"+
+"        ) as DISLIKECNT\n"+
+"from dual";
+
