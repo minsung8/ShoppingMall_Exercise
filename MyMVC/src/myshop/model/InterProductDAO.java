@@ -50,7 +50,14 @@ public interface InterProductDAO {
 	// 싫어요 추가
 	int dislikeAdd(Map<String, String> paraMap) throws SQLException;
 	
-	// 특정 제품에 대해 좋아요, 싫어요의
-	Map<String, Integer> getLikeDislikeCount(String pnum);
+	// 특정 제품에 대해 좋아요, 싫어요의 개수
+	Map<String, Integer> getLikeDislikeCount(String pnum) throws SQLException;
+	
+	
+	// 특정 카테고리에 제품 개수의 총 페이지 수 알아오기
+	List<ProductVO> selectProductByCategory(Map<String, String> paraMap) throws SQLException;
+
+	// 페이징 처리를 위한 총 페이지 수 알아오기
+	int getTotalPage(String cnum) throws SQLException;
 	
 }

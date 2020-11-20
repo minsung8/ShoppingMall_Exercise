@@ -1,8 +1,12 @@
 show user;
 
 SELECT * FROM tabs;
-select * from TBL_PRODUCT;
+select * from tbl_member;
 
+YEG4i6ctlCET9LlMb7PPi5kdwurfLW3jzTKLWhV6LGs
+YEG4i6ctlCET9LlMb7PPi5kdwurfLW3jzTKLWhV6LGs
+
+YEG4i6ctlCET9LlMb7PPi5kdwurfLW3jzTKLWhV6LGs
 
 select * from tbl_member
 where name = '김민성';
