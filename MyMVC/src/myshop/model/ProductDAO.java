@@ -553,87 +553,74 @@ public class ProductDAO implements InterProductDAO {
 	@Override
 	public List<ProductVO> selectProductByCategory(Map<String, String> paraMap) {
 
-		List<ProductVO> prodList = new ArrayList<>();
-		
-		try {
-			
-			conn = ds.getConnection();
-			
-			
-			String sql = "select cname, sname, pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point, pinputdate \n"+
-					"from \n"+
-					"(\n"+
-					"    select rownum AS RNO, cname, sname, pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point, pinputdate \n"+
-					"    from \n"+
-					"    (\n"+
-					"        select C.cname, S.sname, pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point, pinputdate \n"+
-					"        from \n"+
-					"            (select pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point  \n"+
-					"                  , to_char(pinputdate, 'yyyy-mm-dd') as pinputdate, fk_cnum, fk_snum   \n"+
-					"             from tbl_product  \n"+
-					"             where fk_cnum = ? \n"+
-					"             order by pnum desc\n"+
-					"        ) P \n"+
-					"        JOIN tbl_category C \n"+
-					"        ON P.fk_cnum = C.cnum \n"+
-					"        JOIN tbl_spec S \n"+
-					"        ON P.fk_snum = S.snum \n"+
-					"    ) V \n"+
-					") T \n"+
-					"where T.RNO between ? and ?";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			int currentShowPageNo = Integer.parseInt( paraMap.get("currentShowPageNo") );
-			int sizePerPage = 10;
-			
-			pstmt.setString(1, paraMap.get("cnum"));
-			pstmt.setInt(2, (currentShowPageNo * sizePerPage) - (sizePerPage - 1));
-			pstmt.setInt(3, (currentShowPageNo * sizePerPage));
-			
-			rs = pstmt.executeQuery();
-			
-			while (rs.next()) {
-				
-				ProductVO pvo = new ProductVO();
-				
-				pvo.setPnum(rs.getInt("pnum"));
-				pvo.setPname(rs.getString("name"));
-				
-				CategoryVO categvo = new CategoryVO();
-				categvo.setCname(rs.getString("cname"));
-				
-				pvo.setCategvo(categvo);
-				pvo.setPcompany(rs.getNString("pcompany"));
-				pvo.setPimage1(rs.getString("pimage1"));
-				pvo.setPimage2(rs.getString("pimage2"));
-				pvo.setPqty(rs.getInt("pqty"));
-				pvo.setPrice(rs.getInt("price"));
-				pvo.setSaleprice(rs.getInt("saleprice"));
-				
-				SpecVO spvo = new SpecVO();
-				spvo.setSname(rs.getString("sname"));
-				pvo.setSpvo(spvo);
-				
-				pvo.setPcontent(rs.getString("pcontent"));
-				pvo.setPoint(rs.getInt("point"));
-				pvo.setPinputdate(rs.getString("pinputdate"));
-				
-				prodList.add(pvo);
-				
-			}
-			
-			
-			
-			
-			
-		} finally {
-			// TODO: handle finally clause
-		}
+		/*
+		 * List<ProductVO> prodList = new ArrayList<>();
+		 * 
+		 * try {
+		 * 
+		 * conn = ds.getConnection();
+		 * 
+		 * 
+		 * String sql =
+		 * "select cname, sname, pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point, pinputdate \n"
+		 * + "from \n"+ "(\n"+
+		 * "    select rownum AS RNO, cname, sname, pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point, pinputdate \n"
+		 * + "    from \n"+ "    (\n"+
+		 * "        select C.cname, S.sname, pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point, pinputdate \n"
+		 * + "        from \n"+
+		 * "            (select pnum, pname, pcompany, pimage1, pimage2, pqty, price, saleprice, pcontent, point  \n"
+		 * +
+		 * "                  , to_char(pinputdate, 'yyyy-mm-dd') as pinputdate, fk_cnum, fk_snum   \n"
+		 * + "             from tbl_product  \n"+ "             where fk_cnum = ? \n"+
+		 * "             order by pnum desc\n"+ "        ) P \n"+
+		 * "        JOIN tbl_category C \n"+ "        ON P.fk_cnum = C.cnum \n"+
+		 * "        JOIN tbl_spec S \n"+ "        ON P.fk_snum = S.snum \n"+
+		 * "    ) V \n"+ ") T \n"+ "where T.RNO between ? and ?";
+		 * 
+		 * pstmt = conn.prepareStatement(sql);
+		 * 
+		 * int currentShowPageNo = Integer.parseInt( paraMap.get("currentShowPageNo") );
+		 * int sizePerPage = 10;
+		 * 
+		 * pstmt.setString(1, paraMap.get("cnum")); pstmt.setInt(2, (currentShowPageNo *
+		 * sizePerPage) - (sizePerPage - 1)); pstmt.setInt(3, (currentShowPageNo *
+		 * sizePerPage));
+		 * 
+		 * rs = pstmt.executeQuery();
+		 * 
+		 * while (rs.next()) {
+		 * 
+		 * ProductVO pvo = new ProductVO();
+		 * 
+		 * pvo.setPnum(rs.getInt("pnum")); pvo.setPname(rs.getString("name"));
+		 * 
+		 * CategoryVO categvo = new CategoryVO();
+		 * categvo.setCname(rs.getString("cname"));
+		 * 
+		 * pvo.setCategvo(categvo); pvo.setPcompany(rs.getNString("pcompany"));
+		 * pvo.setPimage1(rs.getString("pimage1"));
+		 * pvo.setPimage2(rs.getString("pimage2")); pvo.setPqty(rs.getInt("pqty"));
+		 * pvo.setPrice(rs.getInt("price")); pvo.setSaleprice(rs.getInt("saleprice"));
+		 * 
+		 * SpecVO spvo = new SpecVO(); spvo.setSname(rs.getString("sname"));
+		 * pvo.setSpvo(spvo);
+		 * 
+		 * pvo.setPcontent(rs.getString("pcontent")); pvo.setPoint(rs.getInt("point"));
+		 * pvo.setPinputdate(rs.getString("pinputdate"));
+		 * 
+		 * prodList.add(pvo);
+		 * 
+		 * }
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * } finally { // TODO: handle finally clause }
+		 */
 		
 		
-		
-		return prodList;
+		return null;
 	}
 
 	@Override

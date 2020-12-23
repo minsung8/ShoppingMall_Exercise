@@ -3,6 +3,7 @@ package member.model;
 import java.util.Calendar;
 
 public class MemberVO {
+	
 	private String userid;             // 회원아이디
 	private String pwd;                // 비밀번호 (SHA-256 암호화 대상)
 	private String name;               // 회원명

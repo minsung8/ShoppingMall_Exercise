@@ -20,12 +20,12 @@ public class LikeDislikeCountAction extends AbstractController{
 		
 		InterProductDAO pdao = new ProductDAO();
 		
-		Map<String, String> map = pdao.getLikeDislikeCount(pnum);
+		// Map<String, String> map = pdao.getLikeDislikeCount(pnum);
 		
 		JSONObject jsonObj = new JSONObject();
 		
-		jsonObj.put("likecnt", map.get("likecnt"));
-		jsonObj.put("dislikecnt", map.get("dislikecnt"));
+		// jsonObj.put("likecnt", map.get("likecnt"));
+		// jsonObj.put("dislikecnt", map.get("dislikecnt"));
 		
 		String json = jsonObj.toString();
 		
